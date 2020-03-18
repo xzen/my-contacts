@@ -22,6 +22,8 @@ module.exports = {
     'react',
   ],
   "rules": {
-    "react/jsx-filename-extension": [1, { "extensions": [".js"] }]
+    "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
+    "react/prop-types": 0,
+    "comma-dangle": ["error", {"functions": "ignore"}]
   }
 };
