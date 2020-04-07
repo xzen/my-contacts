@@ -1,17 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { addContact } from './actions';
+import { deleteContact } from './actions';
 
 const Contact = ({ dispatch, user }) => {
-  const { firstName, phone } = user;
+  const { firstName, phone, id } = user;
 
   return (
-    <li key={user.id}>
+    <li>
       <span>{`${firstName} ${phone}`}</span>
       <button
         type="button"
-        onClick={() => dispatch(addContact({ firstName, phone }))}
+        onClick={() => dispatch(deleteContact(id))}
       >
         Delete
       </button>
@@ -21,9 +21,13 @@ const Contact = ({ dispatch, user }) => {
 
 const Contacts = ({ dispatch, items }) => (
   <div>
+    <form>
+      <input type="text" name="firstName" />
+    </form>
     <ul>
       {items.map((user) => (
         <Contact
+          key={user.id}
           dispatch={dispatch}
           user={user}
         />
