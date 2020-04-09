@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Table } from 'react-bootstrap';
+import {
+  Button,
+  Table,
+  InputGroup,
+  FormControl,
+  Container,
+  Row,
+  Col
+} from 'react-bootstrap';
 import axios from 'axios';
 
 import { deleteContact, initializeContacts } from './actions';
@@ -16,6 +24,7 @@ const ContactsList = ({ dispatch, items }) => (
         <th>Adress</th>
         <th>City</th>
         <th>Delete</th>
+        <th>Update</th>
       </tr>
     </thead>
     <tbody>
@@ -48,6 +57,15 @@ const ContactsList = ({ dispatch, items }) => (
               Delete
             </Button>
           </td>
+          <td>
+            <Button
+              variant="primary"
+              type="button"
+              onClick={() => dispatch(deleteContact(user.id))}
+            >
+              Update
+            </Button>
+          </td>
         </tr>
       ))}
     </tbody>
@@ -68,15 +86,32 @@ class Contacts extends Component {
     const { dispatch, items } = this.props;
 
     return (
-      <div>
-        <form>
-          <input type="text" name="firstName" />
-        </form>
-        <ContactsList
-          dispatch={dispatch}
-          items={items}
-        />
-      </div>
+      <Container className="mt-3" fluid="md">
+        {/* Search Engine */}
+        <Row>
+          <Col>
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="Search"
+                aria-label="Search"
+                aria-describedby="You can search an user"
+              />
+              <InputGroup.Append>
+                <Button variant="outline-secondary">Search</Button>
+              </InputGroup.Append>
+            </InputGroup>
+          </Col>
+        </Row>
+        {/* Contacts List */}
+        <Row>
+          <Col>
+            <ContactsList
+              dispatch={dispatch}
+              items={items}
+            />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
