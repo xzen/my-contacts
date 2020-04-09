@@ -1,40 +1,59 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Button } from 'react-bootstrap';
+import axios from 'axios';
 
-import { deleteContact } from './actions';
+import { deleteContact, initializeContacts } from './actions';
+
 
 const Contact = ({ dispatch, user }) => {
-  const { firstName, phone, id } = user;
+  const { name, age, id } = user;
 
   return (
     <li>
-      <span>{`${firstName} ${phone}`}</span>
-      <button
+      <span>{`${name} ${age}`}</span>
+      <Button
+        variant="danger"
         type="button"
         onClick={() => dispatch(deleteContact(id))}
       >
         Delete
-      </button>
+      </Button>
     </li>
   );
 };
 
-const Contacts = ({ dispatch, items }) => (
-  <div>
-    <form>
-      <input type="text" name="firstName" />
-    </form>
-    <ul>
-      {items.map((user) => (
-        <Contact
-          key={user.id}
-          dispatch={dispatch}
-          user={user}
-        />
-      ))}
-    </ul>
-  </div>
-);
+class Contacts extends Component {
+  componentDidMount() {
+    const { dispatch } = this.props;
+
+    axios.post('http://127.0.0.1:3000/users/search', {})
+      .then((res) => {
+        dispatch(initializeContacts(res.data));
+      });
+  }
+
+  render() {
+    const { dispatch, items } = this.props;
+
+    return (
+      <div>
+        <form>
+          <input type="text" name="firstName" />
+        </form>
+        <ul>
+          {items.map((user) => (
+            <Contact
+              key={user.id}
+              dispatch={dispatch}
+              user={user}
+            />
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
 
 const mapToProps = (state) => {
   const { items } = state.contacts;

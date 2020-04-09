@@ -23,7 +23,7 @@ module.exports = {
             {loader :'babel-loader'},
             {loader :'eslint-loader',
               options: {
-                failOnError: true,
+                failOnError: true
               }
             }
           ]
@@ -36,11 +36,19 @@ module.exports = {
           'css-loader',
           'sass-loader'
         ]
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          'file-loader',
+        ],
       }
     ]
   },
   devServer: {
     historyApiFallback: true,
+    host: '127.0.0.1',
+    port: 8080
   },
   output: {
     publicPath: '/'

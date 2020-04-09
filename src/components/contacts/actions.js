@@ -15,3 +15,8 @@ export const deleteContact = (id) => ({
   type: actionsTypes.DELETE_CONTACT,
   id
 });
+
+export const initializeContacts = (contacts) => ({
+  type: actionsTypes.INITIALIZE_CONTACTS,
+  contacts
+});

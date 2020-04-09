@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 // Functions
 import store from './store';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.scss';
 
 // Components
