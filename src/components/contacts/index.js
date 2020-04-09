@@ -13,7 +13,7 @@ import axios from 'axios';
 
 import { deleteContact, initializeContacts } from './actions';
 
-const ContactsList = ({ dispatch, items }) => (
+const ContactsList = ({ dispatch, items, onHandleDelete }) => (
   <Table>
     <thead>
       <tr>
@@ -29,7 +29,7 @@ const ContactsList = ({ dispatch, items }) => (
     </thead>
     <tbody>
       {items.map((user) => (
-        <tr>
+        <tr key={user.id}>
           <td>
             <span>{`${user.firstName}`}</span>
           </td>
@@ -52,7 +52,7 @@ const ContactsList = ({ dispatch, items }) => (
             <Button
               variant="danger"
               type="button"
-              onClick={() => dispatch(deleteContact(user.id))}
+              onClick={() => onHandleDelete(user.id)}
             >
               Delete
             </Button>
@@ -73,12 +73,27 @@ const ContactsList = ({ dispatch, items }) => (
 );
 
 class Contacts extends Component {
+  constructor() {
+    super();
+
+    this.onHandleDelete = this.onHandleDelete.bind(this);
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
 
     axios.post('http://127.0.0.1:3000/users/search', {})
       .then((res) => {
         dispatch(initializeContacts(res.data));
+      });
+  }
+
+  onHandleDelete(id) {
+    const { dispatch } = this.props;
+
+    axios.delete(`http://127.0.0.1:3000/user/delete/${id}`)
+      .then(() => {
+        dispatch(deleteContact(id));
       });
   }
 
@@ -108,6 +123,7 @@ class Contacts extends Component {
             <ContactsList
               dispatch={dispatch}
               items={items}
+              onHandleDelete={this.onHandleDelete}
             />
           </Col>
         </Row>
