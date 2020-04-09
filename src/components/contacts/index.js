@@ -1,27 +1,58 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import axios from 'axios';
 
 import { deleteContact, initializeContacts } from './actions';
 
-
-const Contact = ({ dispatch, user }) => {
-  const { name, age, id } = user;
-
-  return (
-    <li>
-      <span>{`${name} ${age}`}</span>
-      <Button
-        variant="danger"
-        type="button"
-        onClick={() => dispatch(deleteContact(id))}
-      >
-        Delete
-      </Button>
-    </li>
-  );
-};
+const ContactsList = ({ dispatch, items }) => (
+  <Table>
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Gender</th>
+        <th>Age</th>
+        <th>Adress</th>
+        <th>City</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {items.map((user) => (
+        <tr>
+          <td>
+            <span>{`${user.firstName}`}</span>
+          </td>
+          <td>
+            <span>{`${user.lastName}`}</span>
+          </td>
+          <td>
+            <span>{`${user.gender}`}</span>
+          </td>
+          <td>
+            <span>{`${user.age}`}</span>
+          </td>
+          <td>
+            <span>{`${user.adressNumber} ${user.adressType} ${user.adressName}`}</span>
+          </td>
+          <td>
+            <span>{`${user.cityName} ${user.cityCode}`}</span>
+          </td>
+          <td>
+            <Button
+              variant="danger"
+              type="button"
+              onClick={() => dispatch(deleteContact(user.id))}
+            >
+              Delete
+            </Button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </Table>
+);
 
 class Contacts extends Component {
   componentDidMount() {
@@ -41,15 +72,10 @@ class Contacts extends Component {
         <form>
           <input type="text" name="firstName" />
         </form>
-        <ul>
-          {items.map((user) => (
-            <Contact
-              key={user.id}
-              dispatch={dispatch}
-              user={user}
-            />
-          ))}
-        </ul>
+        <ContactsList
+          dispatch={dispatch}
+          items={items}
+        />
       </div>
     );
   }
