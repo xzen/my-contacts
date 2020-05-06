@@ -76,7 +76,17 @@ class Contacts extends Component {
   constructor() {
     super();
 
+    this.state = {
+      input: '',
+      ageMax: null,
+      gender: null
+    };
+
     this.onHandleDelete = this.onHandleDelete.bind(this);
+    this.onHandleSearch = this.onHandleSearch.bind(this);
+    this.onHandleSearchAgeMax = this.onHandleSearchAgeMax.bind(this);
+    this.onHandleSearchGender = this.onHandleSearchGender.bind(this);
+    this.onHandleClickSearch = this.onHandleClickSearch.bind(this);
   }
 
   componentDidMount() {
@@ -97,8 +107,52 @@ class Contacts extends Component {
       });
   }
 
+  onHandleSearchAgeMax(e) {
+    this.setState({
+      ageMax: parseInt(e.target.value, 10)
+    });
+  }
+
+  onHandleSearchGender(e) {
+    this.setState({
+      gender: e.target.value
+    });
+  }
+
+  onHandleSearch(e) {
+    this.setState({
+      input: e.target.value
+    });
+  }
+
+  onHandleClickSearch() {
+    const { dispatch } = this.props;
+    const { input, ageMax, gender } = this.state;
+    const params = {
+      firstName: input
+    };
+
+    if (ageMax) {
+      Object.assign(params, {
+        age_max: ageMax
+      });
+    }
+
+    if (gender) {
+      Object.assign(params, {
+        gender
+      });
+    }
+
+    axios.post('http://127.0.0.1:3000/users/search', params)
+      .then((res) => {
+        dispatch(initializeContacts(res.data));
+      });
+  }
+
   render() {
     const { dispatch, items } = this.props;
+    const { input } = this.state;
 
     return (
       <Container className="mt-3" fluid="md">
@@ -106,14 +160,49 @@ class Contacts extends Component {
         <Row>
           <Col>
             <InputGroup className="mb-3">
-              <FormControl
-                placeholder="Search"
-                aria-label="Search"
-                aria-describedby="You can search an user"
-              />
-              <InputGroup.Append>
-                <Button variant="outline-secondary">Search</Button>
-              </InputGroup.Append>
+              <Row>
+                <Col sm={8}>
+                  <FormControl
+                    placeholder="Search"
+                    aria-label="Search"
+                    aria-describedby="You can search an user"
+                    value={input}
+                    onChange={this.onHandleSearch}
+                  />
+                </Col>
+                <Col sm={2}>
+                  <FormControl
+                    onChange={this.onHandleSearchAgeMax}
+                    as="select"
+                    custom
+                  >
+                    <option selected="selected">Age max</option>
+                    <option>18</option>
+                    <option>30</option>
+                    <option>40</option>
+                    <option>50</option>
+                    <option>60</option>
+                  </FormControl>
+                </Col>
+                <Col sm={2}>
+                  <FormControl
+                    onChange={this.onHandleSearchGender}
+                    as="select"
+                    custom
+                  >
+                    <option selected="selected">Gender</option>
+                    <option>M</option>
+                    <option>F</option>
+                  </FormControl>
+                </Col>
+                <Col sm={2}>
+                  <InputGroup.Append>
+                    <Button variant="outline-secondary" onClick={this.onHandleClickSearch}>
+                      Search
+                    </Button>
+                  </InputGroup.Append>
+                </Col>
+              </Row>
             </InputGroup>
           </Col>
         </Row>
